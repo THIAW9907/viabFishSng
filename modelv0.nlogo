@@ -1,5 +1,6 @@
 breed [boats boat]
 breed [villages village]
+undirected-link-breed [communication-links communication-link]
 
 globals [
   ;; GIS Data
