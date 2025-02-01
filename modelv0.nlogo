@@ -395,6 +395,30 @@ to move
   move-to one-of lakeCells with[excluPeche = FALSE]
 end
 
+to share-information-group-priority
+  ask boats [
+    ;; Vérifier si la pirogue est sur l'eau avant de partager
+    if fish-stock > 0 [
+      ;; Partager en priorité avec les voisins du même groupe qui sont aussi sur le lac
+      ask link-neighbors with [group-id = [group-id] of myself and fish-stock > 0] [
+        if [stock-info] of myself > stock-info [
+          set stock-info [stock-info] of myself
+          set best-spot [best-spot] of myself
+          set reproduction-info [reproduction-info] of myself
+        ]
+      ]
+      ;; Partager ensuite avec les voisins des autres groupes sur le lac
+      ask link-neighbors with [group-id != [group-id] of myself and fish-stock > 0] [
+        if [stock-info] of myself > stock-info [
+          set stock-info [stock-info] of myself
+          set best-spot [best-spot] of myself
+          set reproduction-info [reproduction-info] of myself
+        ]
+      ]
+    ]
+  ]
+end
+
 ;; les pecheurs avancent dans une même direction : modelise lorsqu'ils relevent leurs filets
 to moveForward
   ;pour dessiner les pecheurs
