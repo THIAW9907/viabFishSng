@@ -142,8 +142,9 @@ to setup
   set kLakeCell (k / nblakeCells)
   ask lakeCells [
     set biomass kLakeCell
+    set initial-fish-stock sum [biomass] of patches with [lake]          ;;;
   ]
-
+set communication-enabled communication-enabled  ;; Initialisez la variable avec la valeur du switch ;;;;;;;
   ask patches with[lake = FALSE][set biomass 0]
 
 
