@@ -419,6 +419,25 @@ to share-information-group-priority
   ]
 end
 
+to update-groups
+  ask boats [
+    ;; Réinitialiser les groupes si la distance avec le groupe est trop grande
+    if any? boats in-radius 5 with [group-id = [group-id] of myself] = false [
+      set group-id 0
+    ]
+  ]
+end  
+
+to display-info      ;;;;
+  ask boats [
+    set label (word "Stock:" stock-info)
+  ]
+end      
+;;;;;
+to-report information-accuracy
+  report mean [stock-info] of boats
+end
+
 ;; les pecheurs avancent dans une même direction : modelise lorsqu'ils relevent leurs filets
 to moveForward
   ;pour dessiner les pecheurs
@@ -439,6 +458,15 @@ to moveForward
   ;show is_fishable? patch_ahead
 
   ;pen-up
+end
+
+to-report average-intra-group-interactions
+  let total-interactions 0
+  ask boats [
+    let intra-group-neighbors count link-neighbors with [group-id = [group-id] of myself]
+    set total-interactions total-interactions + intra-group-neighbors
+  ]
+  report total-interactions / count boats
 end
 
 to-report is_fishable? [patch_ahead]
