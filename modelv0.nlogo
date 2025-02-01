@@ -52,6 +52,10 @@ patches-own[
  excluPeche ; bol
  excluPecheCells ; bol
  biomass ; kg
+;;; zone de rotation
+  zone-id         ; Identifiant unique de la zone de pêche
+  zone-usage      ; Nombre d'agents ayant récemment pêché dans cette zone
+  rest-period     ; Temps de repos assigné à la zone
 ]
 
 villages-own[
@@ -69,6 +73,12 @@ boats-own[
   firstExitSatifaction  ;; if 9999  = NA  MFET in mathias et al. 2024
   AST                   ;; mean sojourn time  in Mathias et al. 2024 as list
   ASTc                  ;; a count on MST to have one number per boat
+
+  best-spot ; coordonnées du meilleur endroit de pêche     ;;;;;;;;;;;
+  stock-info ; estimation des stocks de poissons            ;;;;;;;;;;
+  reproduction-info ; période de reproduction des poissons    ;;;;;;;;;
+  group-id ; Identifiant du groupe
+
 ]
 
 extensions [gis]
