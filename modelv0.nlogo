@@ -25,6 +25,15 @@ globals [
   biomassfished
   t1
   t2
+;;; éfficacité de la peche
+  fish-stock          ;;;;;;
+  fishing-efficiency  ;;éfficacité de la pêche
+  total-fish-caught          ; Total des poissons capturés
+  average-catch-efficiency   ; Efficacité moyenne de la pêche
+  stock-durability           ; Durabilité des stocks
+  fishing-pressure           ; Pression locale sur les zones de pêche
+  initial-fish-stock
+
 
   meanMST         ; mean sojourn time on captial MST for for all boat
   medianMFET      ; median exit time on capital  MFET for all boat
