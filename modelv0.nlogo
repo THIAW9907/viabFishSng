@@ -191,9 +191,20 @@ set communication-enabled communication-enabled  ;; Initialisez la variable avec
       ]
     ]
   ]
+ ;;; form-groups
+  let group-counter 0
+  ask boats [
+    if group-id = 0 [ ; Si l'agent n'a pas encore de groupe
+      set group-counter group-counter + 1
+      set group-id group-counter
+      ;; Ajouter les voisins proches au même groupe
+      ask boats in-radius 2 [
+        if group-id = 0 [ set group-id group-counter ]
+      ]
+    ]
+  ]                      
 
-
-  statSummary
+ statSummary
 
 end
 
@@ -233,6 +244,24 @@ to go
     grow-biomass
     ;set pcolor scale-color blue biomass 0 (k / count lakeCells) ; quand c'est blanc c'est qu'il y a beaucoup de poisson vs noir plus de poisson
   ]
+ ask boats [             
+    ;; Partager les informations avant de pêcher
+    share-information-group-priority
+
+    ;; Comportement pour choisir le meilleur endroit basé sur les informations reçues
+    ifelse any? patches in-radius 5 with [fish-stock > 0] [
+      let target-patch max-one-of patches in-radius 5 [fish-stock]
+      move-to target-patch
+    ] [
+      ;; Si aucun stock élevé, déplacer aléatoirement
+      rt random 360
+      fd 1
+    ]
+  ]                                                       
+  
+  if ticks mod 10 = 0 [ update-groups ] ; Mettre à jour les groupes tous les 10 ticks
+  share-information-group-priority
+  tick       ;;;
 
   ;statSummary
   ;print sumBiomass
@@ -324,6 +353,33 @@ to go
     calculSatisfaction
     ]
 
+  ]
+; calculate-statistics
+  set sumBiomass sum [biomass] of patches
+  set stock-durability (sumBiomass / initial-fish-stock) * 100
+ 
+
+  if initial-fish-stock > 0 [
+    set fishing-pressure (biomassfished / initial-fish-stock) * 100
+  ]
+ ;;calculate-fishing-efficiency
+  if count boats > 0 [
+    set fishing-efficiency (biomassfished / count boats)
+  ]
+ ;;fish
+   ask boats [
+    if communication-enabled [
+      set best-spot max-one-of patches with [lake = 1] [ fish-stock ]
+      if best-spot != nobody [
+        if [lake] of best-spot = 1 [ move-to best-spot ]
+      ]
+      set biomassfished biomassfished * 1.2  ;; Augmente l'efficacité avec communication
+    ]
+    set biomassfished biomassfished + biomassfished
+  ]
+ ;; Ajout au plot
+  if communication-enabled [
+    plotxy ticks biomassfished  ;; Trace la biomasse pêchée avec communication
   ]
 
   caluclG
